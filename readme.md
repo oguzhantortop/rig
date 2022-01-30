@@ -1,3 +1,5 @@
-docker build . -t rig:latest
+To run this program pls execute commands below:
 
-docker run  -p 8080:8080/tcp rig 
+* docker build . -t rig:latest
+
+* docker run  -p 8080:8080/tcp rig 
