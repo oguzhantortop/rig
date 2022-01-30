@@ -10,6 +10,9 @@ import com.oguzhan.rig.repository.BookRepository;
 import com.oguzhan.rig.repository.OrderRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -111,4 +114,20 @@ public class OrderService {
         return orderResponseDto;
     }
 
+    public OrderResponsePageableDto getCustomerOrders(Long customerId, int page, int size) {
+        OrderResponsePageableDto orderResponsePageableDto = new OrderResponsePageableDto();
+        List<OrderResponseDto> orderList = new ArrayList<>();
+        orderResponsePageableDto.setOrderList(orderList);
+        Pageable paging = PageRequest.of(page, size);
+
+        Page<Order> pageOrders = orderRepository.findAllOrderByCustomerId(customerId, paging);
+        for (Order order:  pageOrders.getContent()) {
+            orderList.add(mapToOrderResponseDto(order));
+        };
+        orderResponsePageableDto.setCurrentPage(pageOrders.getNumber());
+        orderResponsePageableDto.setTotalItems(pageOrders.getTotalElements());
+        orderResponsePageableDto.setTotalPages(pageOrders.getTotalPages());
+
+        return orderResponsePageableDto;
+    }
 }

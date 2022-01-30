@@ -1,7 +1,10 @@
 package com.oguzhan.rig.controller;
 
 import com.oguzhan.rig.dto.CustomerDto;
+import com.oguzhan.rig.dto.OrderResponseDto;
+import com.oguzhan.rig.dto.OrderResponsePageableDto;
 import com.oguzhan.rig.service.CustomerService;
+import com.oguzhan.rig.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +18,9 @@ public class CustomerController {
 
     @Autowired
     private CustomerService customerService;
+
+    @Autowired
+    private OrderService orderService;
 
     @GetMapping(path = "/{customerId}")
     public ResponseEntity<CustomerDto> getCustomer(@PathVariable(value = "customerId") Long customerId) throws Exception {
@@ -38,6 +44,15 @@ public class CustomerController {
     public ResponseEntity deleteCustomer(@PathVariable(value = "customerId") Long customerId) throws Exception {
         customerService.deleteCustomer(customerId);
         return new ResponseEntity(HttpStatus.OK);
+    }
+
+
+    @GetMapping(path = "/{customerId}/Order")
+    public ResponseEntity<OrderResponsePageableDto> getCustomerOrders(@PathVariable(value = "customerId") Long customerId,
+                                                              @RequestParam(defaultValue = "0") int page,
+                                                              @RequestParam(defaultValue = "10") int size) throws Exception {
+        OrderResponsePageableDto orderResponseDto = orderService.getCustomerOrders(customerId,page,size);
+        return new ResponseEntity<OrderResponsePageableDto>(orderResponseDto, HttpStatus.OK);
     }
 
 }
