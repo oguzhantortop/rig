@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -129,5 +130,23 @@ public class OrderService {
         orderResponsePageableDto.setTotalPages(pageOrders.getTotalPages());
 
         return orderResponsePageableDto;
+    }
+
+    public List<OrderResponseDto> getOrdersWithinDate(Date start, Date end) {
+        List<OrderResponseDto> orderList = new ArrayList<>();
+
+        List<Order> allOrdersByDateRange = orderRepository.getAllOrdersByDateRange(start, end);
+
+        for (Order order: allOrdersByDateRange) {
+            orderList.add(mapToOrderResponseDto(order));
+        }
+        return orderList;
+    }
+
+    public OrderStatsResponseDto getCustomerOrderStats(Long customerId) {
+        OrderStatsResponseDto orderStatsResponseDto = new OrderStatsResponseDto();
+        List<MonthlyOrderStatDto> monthlyOrderStats = orderRepository.getMonthlyOrderStats(customerId);
+        orderStatsResponseDto.setList(monthlyOrderStats);
+        return orderStatsResponseDto;
     }
 }

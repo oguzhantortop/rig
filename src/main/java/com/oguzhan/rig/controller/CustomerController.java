@@ -3,6 +3,7 @@ package com.oguzhan.rig.controller;
 import com.oguzhan.rig.dto.CustomerDto;
 import com.oguzhan.rig.dto.OrderResponseDto;
 import com.oguzhan.rig.dto.OrderResponsePageableDto;
+import com.oguzhan.rig.dto.OrderStatsResponseDto;
 import com.oguzhan.rig.service.CustomerService;
 import com.oguzhan.rig.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +54,12 @@ public class CustomerController {
                                                               @RequestParam(defaultValue = "10") int size) throws Exception {
         OrderResponsePageableDto orderResponseDto = orderService.getCustomerOrders(customerId,page,size);
         return new ResponseEntity<OrderResponsePageableDto>(orderResponseDto, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/{customerId}/Order/Stats")
+    public ResponseEntity<OrderStatsResponseDto> getCustomerOrderStats(@PathVariable(value = "customerId") Long customerId) throws Exception {
+        OrderStatsResponseDto orderResponseDto = orderService.getCustomerOrderStats(customerId);
+        return new ResponseEntity<OrderStatsResponseDto>(orderResponseDto, HttpStatus.OK);
     }
 
 }
