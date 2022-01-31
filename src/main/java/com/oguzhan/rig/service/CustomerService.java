@@ -34,6 +34,14 @@ public class CustomerService {
         }
     }
 
+    public Customer getCustomerByEmail(String email) {
+        List<Customer> clist = customerRepository.findByEmail(email);
+        if(!clist.isEmpty()) {
+            return clist.get(0);
+        }
+        return null;
+    }
+
     public void deleteCustomer(Long customerId) throws Exception {
         validateCustomerExistence(customerId);
         customerRepository.deleteById(customerId);

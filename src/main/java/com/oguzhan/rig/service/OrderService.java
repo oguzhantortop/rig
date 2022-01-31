@@ -5,6 +5,7 @@ import com.oguzhan.rig.dao.Customer;
 import com.oguzhan.rig.dao.Order;
 import com.oguzhan.rig.dao.OrderDetail;
 import com.oguzhan.rig.dto.*;
+import com.oguzhan.rig.exception.BusinessException;
 import com.oguzhan.rig.exception.ResourceNotFound;
 import com.oguzhan.rig.repository.BookRepository;
 import com.oguzhan.rig.repository.OrderRepository;
@@ -57,7 +58,7 @@ public class OrderService {
 
             if(book2Update == null) {
                 ErrorResponse errorResponse = new ErrorResponse("ORDER_ERR_002","Book with given id does not exists!");
-                throw new ResourceNotFound(errorResponse);
+                throw new BusinessException(errorResponse);
             }else if(hasEnoughStock(orderDetailReqDto, book2Update)) {
                 book2Update.setStockCount(book2Update.getStockCount()-orderDetailReqDto.getCount());
                 bookRepository.save(book2Update);
@@ -66,7 +67,7 @@ public class OrderService {
                 totalPrice+= getSubTotalPrice(orderDetailReqDto, book2Update);
             } else {
                 ErrorResponse errorResponse = new ErrorResponse("ORDER_ERR_003","Book with given id less than requested");
-                throw new ResourceNotFound(errorResponse);
+                throw new BusinessException(errorResponse);
             }
         }
         order.setTotalPrice(totalPrice);

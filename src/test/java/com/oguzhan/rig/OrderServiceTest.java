@@ -19,6 +19,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -52,7 +53,7 @@ public class OrderServiceTest {
         bookDto.setAuthor("John Doe");
         bookDto.setIsbn("123456789");
         bookDto.setTitle("Book of Order");
-        bookDto.setStockCount(10L);
+        bookDto.setStockCount(30L);
         bookDto.setUnitPrice(BigDecimal.valueOf(2.99));
         this.book = bookService.createBook(bookDto);
     }
@@ -93,6 +94,36 @@ public class OrderServiceTest {
         assertAll(
                 () -> assertThrows(ResourceNotFound.class,() -> orderService.getOrder(-1L)),
                 () -> assertNotNull(orderService.getOrder(order.getId()))
+        );
+    }
+
+    @Test
+    @DisplayName("Get Orders Within Given Date Range Test")
+    void testGetOrderWithinGivenDateRange() throws Exception{
+        OrderRequestDto orderDto = getOrderRequestDto();
+        OrderResponseDto order = orderService.createOrder(orderDto);
+        Calendar cal =Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_YEAR,-1);
+        Date startDate = cal.getTime();
+        cal.add(Calendar.DAY_OF_YEAR,2);
+        Date endDate = cal.getTime();
+        List<OrderResponseDto> orderList = orderService.getOrdersWithinDate(startDate, endDate);
+        assertAll(
+                () -> assertNotNull(orderList),
+                () -> assertFalse(orderList.isEmpty())
+        );
+    }
+
+    @Test
+    @DisplayName("Get Orders Stats Test")
+    void testGetOrderStats() throws Exception{
+        OrderRequestDto orderDto = getOrderRequestDto();
+        OrderResponseDto order = orderService.createOrder(orderDto);
+        order.getOrderDetailList().get(0).setCount(1L);
+        OrderStatsResponseDto customerOrderStats = orderService.getCustomerOrderStats(this.customer.getId());
+        assertAll(
+                () -> assertNotNull(customerOrderStats),
+                () -> assertFalse(customerOrderStats.getList().isEmpty())
         );
     }
 

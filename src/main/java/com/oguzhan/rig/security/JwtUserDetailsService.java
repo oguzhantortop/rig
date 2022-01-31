@@ -2,6 +2,7 @@ package com.oguzhan.rig.security;
 
 import java.util.ArrayList;
 
+import com.oguzhan.rig.dao.Customer;
 import com.oguzhan.rig.dto.CustomerDto;
 import com.oguzhan.rig.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,16 +23,16 @@ public class JwtUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        CustomerDto customer =null;
+        Customer customer =null;
         try {
-            customer = customerService.getCustomer(Long.valueOf(username));
+            customer = customerService.getCustomerByEmail(username);
         } catch (Exception e) {
             e.printStackTrace();
         }
         if (customer == null) {
             throw new UsernameNotFoundException("User not found with username: " + username);
         }
-        return new org.springframework.security.core.userdetails.User(customer.getId().toString(), bcryptEncoder.encode(customer.getPassword()),
+        return new org.springframework.security.core.userdetails.User(customer.getEmail(), bcryptEncoder.encode(customer.getPassword()),
                 new ArrayList<>());
     }
 }
