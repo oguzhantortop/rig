@@ -1,7 +1,8 @@
+This program uses Spring Boot v2.7.0, Java 11 and H2 as a RDBMS 
+
 To run this program please first mvn install than execute commands below:
 
 * docker build . -t rig:latest
-
 * docker run  -p 8080:8080/tcp rig 
 
 After running the program you can find the postman collection in Postman folder.
